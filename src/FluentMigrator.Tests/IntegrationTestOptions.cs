@@ -13,13 +13,13 @@
 															{
 																ConnectionString =
 																	@"Data Source=:memory:;Version=3;New=True;",
-																IsEnabled = true
+                                                                IsEnabled = true
 															};
 
 		public static DatabaseServerOptions MySql = new DatabaseServerOptions
 														{
 															ConnectionString =
-																@"Database=FluentMigrator;Data Source=localhost;User Id=test;Password=test;",
+																@"Database=FluentMigrator;Data Source=localhost;User Id=root;Password=;",
 															IsEnabled = false
 														};
 

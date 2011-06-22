@@ -16,11 +16,12 @@ namespace FluentMigrator.Tests.Unit.Generators
         public static string TestColumnName1 = "TestColumn1";
         public static string TestColumnName2 = "TestColumn2";
         public static string TestIndexName = "TestIndex";
+        public static string TestSchema = "TestSchema";
         public static Guid TestGuid = Guid.NewGuid();
 
         public static CreateTableExpression GetCreateTableExpression()
         {
-            CreateTableExpression expression = new CreateTableExpression() { TableName = TestTableName1, };
+            CreateTableExpression expression = new CreateTableExpression() { TableName = TestTableName1 };
             expression.Columns.Add(new ColumnDefinition { Name = TestColumnName1, Type = DbType.String });
             expression.Columns.Add(new ColumnDefinition { Name = TestColumnName2, Type = DbType.Int32 });
 
@@ -311,6 +312,98 @@ namespace FluentMigrator.Tests.Unit.Generators
             return expression;
         }
 
+        public static DeleteConstraintExpression GetDeletePrimaryKeyExpression()
+        {
+            var expression = new DeleteConstraintExpression(ConstraintType.PrimaryKey);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.ConstraintName = "TESTPRIMARYKEY";
+            return expression;
+        }
+
+        public static DeleteConstraintExpression GetDeleteUniqueConstraintExpression()
+        {
+            var expression = new DeleteConstraintExpression(ConstraintType.Unique);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.ConstraintName = "TESTUNIQUECONSTRAINT";
+            return expression;
+        }
+
+
+        public static CreateConstraintExpression GetCreatePrimaryKeyExpression()
+        {
+            var expression = new CreateConstraintExpression(ConstraintType.PrimaryKey);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.Columns.Add(TestColumnName1);
+            expression.ApplyConventions(new MigrationConventions());
+            return expression;
+        }
+
+        public static CreateConstraintExpression GetCreateNamedPrimaryKeyExpression()
+        {
+            var expression = new CreateConstraintExpression(ConstraintType.PrimaryKey);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.Columns.Add(TestColumnName1);
+            expression.Constraint.ConstraintName = "TESTPRIMARYKEY";
+            return expression;
+        }
+
+        public static CreateConstraintExpression GetCreateMultiColumnPrimaryKeyExpression()
+        {
+            var expression = new CreateConstraintExpression(ConstraintType.PrimaryKey);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.Columns.Add(TestColumnName1);
+            expression.Constraint.Columns.Add(TestColumnName2);
+            expression.ApplyConventions(new MigrationConventions());
+            return expression;
+        }
+
+        public static CreateConstraintExpression GetCreateMultiColumnNamedPrimaryKeyExpression()
+        {
+            var expression = new CreateConstraintExpression(ConstraintType.PrimaryKey);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.Columns.Add(TestColumnName1);
+            expression.Constraint.Columns.Add(TestColumnName2);
+            expression.Constraint.ConstraintName = "TESTPRIMARYKEY";
+            return expression;
+        }
+
+        public static CreateConstraintExpression GetCreateUniqueConstraintExpression()
+        {
+            var expression = new CreateConstraintExpression(ConstraintType.Unique);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.Columns.Add(TestColumnName1);
+            expression.ApplyConventions(new MigrationConventions());
+            return expression;
+        }
+
+        public static CreateConstraintExpression GetCreateNamedUniqueConstraintExpression()
+        {
+            var expression = new CreateConstraintExpression(ConstraintType.Unique);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.Columns.Add(TestColumnName1);
+            expression.Constraint.ConstraintName = "TESTUNIQUECONSTRAINT";
+            return expression;
+        }
+
+        public static CreateConstraintExpression GetCreateMultiColumnUniqueConstraintExpression()
+        {
+            var expression = new CreateConstraintExpression(ConstraintType.Unique);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.Columns.Add(TestColumnName1);
+            expression.Constraint.Columns.Add(TestColumnName2);
+            expression.ApplyConventions(new MigrationConventions());
+            return expression;
+        }
+
+        public static CreateConstraintExpression GetCreateMultiColumnNamedUniqueConstraintExpression()
+        {
+            var expression = new CreateConstraintExpression(ConstraintType.Unique);
+            expression.Constraint.TableName = TestTableName1;
+            expression.Constraint.Columns.Add(TestColumnName1);
+            expression.Constraint.Columns.Add(TestColumnName2);
+            expression.Constraint.ConstraintName = "TESTUNIQUECONSTRAINT";
+            return expression;
+        }
 
     }
 }

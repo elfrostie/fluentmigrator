@@ -35,7 +35,7 @@ namespace FluentMigrator.Runner.Generators.SqlServer
 		{
 		}
 
-
+        
         public override string CreateTable { get { return "{0} ({1})"; } }
         public override string DropTable { get { return "{0}"; } }
 
@@ -53,12 +53,22 @@ namespace FluentMigrator.Runner.Generators.SqlServer
         public override string UpdateData { get { return "{0} SET {1} WHERE {2}"; } }
         public override string DeleteData { get { return "DELETE FROM {0}.{1} WHERE {2}"; } }
 
-        public override string CreateConstraint { get { return "ALTER TABLE {0}.{1} ADD CONSTRAINT {2} FOREIGN KEY ({3}) REFERENCES {4}.{5} ({6}){7}{8}"; } }
+        public override string CreateForeignKeyConstraint { get { return "ALTER TABLE {0}.{1} ADD CONSTRAINT {2} FOREIGN KEY ({3}) REFERENCES {4}.{5} ({6}){7}{8}"; } }
         public override string DeleteConstraint { get { return "{0} DROP CONSTRAINT {1}"; } }
+
+
+        public override string CreateConstraint { get { return "{0} ADD CONSTRAINT {1} {2} ({3})"; } }
+
+        public override string IfNotExistsString(CreateTableExpression expression)
+        {
+            return expression.IfNotExists ? string.Format("IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{0}.{1}') AND type in (N'U')) ", Quoter.QuoteSchemaName(expression.SchemaName), Quoter.QuoteTableName(expression.TableName)) : "";
+        }
+
 
         public override string Generate(CreateTableExpression expression)
         {
-            return string.Format("CREATE TABLE {0}.{1}",Quoter.QuoteSchemaName(expression.SchemaName), base.Generate(expression));
+            var ifnotExsits = IfNotExistsString(expression);
+            return string.Format("{2}CREATE TABLE {0}.{1}",Quoter.QuoteSchemaName(expression.SchemaName), base.Generate(expression),ifnotExsits);
         }
 
         public override string Generate(DeleteTableExpression expression)
@@ -117,6 +127,16 @@ namespace FluentMigrator.Runner.Generators.SqlServer
             return String.Join("; ", deleteItems.ToArray());
         }
 
+        public override string Generate(CreateConstraintExpression expression)
+        {
+            return string.Format("ALTER TABLE {0}.{1}", Quoter.QuoteSchemaName(expression.Constraint.SchemaName), base.Generate(expression));
+        }
+
+        public override string Generate(DeleteConstraintExpression expression)
+        {
+            return string.Format("ALTER TABLE {0}.{1}", Quoter.QuoteSchemaName(expression.Constraint.SchemaName), base.Generate(expression));
+        }
+
         public override string Generate(DeleteForeignKeyExpression expression)
         {
             return string.Format("ALTER TABLE {0}.{1}", Quoter.QuoteSchemaName(expression.ForeignKey.ForeignTableSchema), base.Generate(expression));
@@ -169,7 +189,7 @@ namespace FluentMigrator.Runner.Generators.SqlServer
                 foreignColumns.Add(Quoter.QuoteColumnName(column));
             }
             return string.Format(
-                CreateConstraint,
+                CreateForeignKeyConstraint,
                 Quoter.QuoteSchemaName(expression.ForeignKey.ForeignTableSchema),
                 Quoter.QuoteTableName(expression.ForeignKey.ForeignTable),
                 Quoter.QuoteColumnName(expression.ForeignKey.Name),
@@ -283,7 +303,7 @@ namespace FluentMigrator.Runner.Generators.SqlServer
         }
 
 
-
+        
 
         
 

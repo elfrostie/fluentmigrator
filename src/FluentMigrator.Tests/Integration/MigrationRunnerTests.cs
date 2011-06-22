@@ -44,13 +44,17 @@ namespace FluentMigrator.Tests.Integration
 		[SetUp]
 		public void SetUp()
 		{
-			_runnerContext = new RunnerContext(new TextWriterAnnouncer(System.Console.Out))
-										{
-											Database = "sqlserver",
-											Target = GetType().Assembly.Location,
-											Connection = IntegrationTestOptions.SqlServer.ConnectionString,
-											Namespace = "FluentMigrator.Tests.Integration.Migrations"
-										};
+            _runnerContext = new RunnerContext(new TextWriterAnnouncer(System.Console.Out)
+            {
+                ShowElapsedTime = true,
+                ShowSql = true
+            })
+                                        {
+                                            Database = "sqlserver",
+                                            Target = GetType().Assembly.Location,
+                                            Connection = IntegrationTestOptions.SqlServer.ConnectionString,
+                                            Namespace = "FluentMigrator.Tests.Integration.Migrations"
+                                        };
 		}
 
 		[Test]
@@ -473,14 +477,36 @@ namespace FluentMigrator.Tests.Integration
 			}
 		}
 
+        [Test]
+        public void MigrateUpWithIFNotExistsClause()
+        {
+            ExecuteWithSupportedProcessors(processor =>
+            {
+                var runner = SetupMigrationRunner(processor);
+
+                runner.Up(new TestIFNotExists());
+
+                processor.TableExists(null,"TestTable1").ShouldBeTrue();
+
+                runner.Down(new TestIFNotExists());
+                runner.VersionLoader.RemoveVersionTable();
+            },true);
+
+        }
+
 
 		private static MigrationRunner SetupMigrationRunner(IMigrationProcessor processor)
 		{
 			Assembly asm = typeof(MigrationRunnerTests).Assembly;
-			var runnerContext = new RunnerContext(new TextWriterAnnouncer(System.Console.Out))
-			{
-				Namespace = "FluentMigrator.Tests.Integration.Migrations"
-			};
+            var runnerContext = new RunnerContext(new TextWriterAnnouncer(System.Console.Out)
+            {
+                ShowElapsedTime = true,
+                ShowSql = true
+            })
+            {
+
+                Namespace = "FluentMigrator.Tests.Integration.Migrations"
+            };
 
 			return new MigrationRunner(asm, runnerContext, processor);
 		}
@@ -527,6 +553,28 @@ namespace FluentMigrator.Tests.Integration
 			Delete.Table("Groups");
 		}
 	}
+
+    internal class TestIFNotExists : Migration
+    {
+        public override void Up()
+        {
+
+            Create.Table("TestTable1")
+                .WithColumn("Foo").AsInt32()
+                .WithColumn("Bar").AsString();
+
+            Create.Table("TestTable1").IfNotExists()
+                .WithColumn("Foo").AsInt32()
+                .WithColumn("Bar").AsString();
+        }
+
+        public override void Down()
+        {
+            Delete.Table("TestTable1");
+        }
+        
+
+    }
 
 	internal class TestIndexNamingConvention : Migration
 	{
