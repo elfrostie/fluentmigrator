@@ -43,6 +43,14 @@ namespace FluentMigrator.Model
 
 		public void ApplyConventions(IMigrationConventions conventions)
 		{
+            if (String.IsNullOrEmpty(ForeignTableSchema)) {
+                ForeignTableSchema = conventions.GetDefaultSchemaName();
+            }
+
+            if (String.IsNullOrEmpty(PrimaryTableSchema)) {
+                PrimaryTableSchema = conventions.GetDefaultSchemaName();
+            }
+
 			if (String.IsNullOrEmpty(Name))
 				Name = conventions.GetForeignKeyName(this);
 		}

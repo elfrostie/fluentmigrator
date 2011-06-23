@@ -32,5 +32,7 @@ namespace FluentMigrator
 		Func<string> GetWorkingDirectory { get; set; }
 
         Func<Model.ConstraintDefinition,string> GetConstraintName { get; set; }
+
+        Func<String> GetDefaultSchemaName { get; }
 	}
 }

@@ -50,6 +50,10 @@ namespace FluentMigrator.Model
 
         public void ApplyConventions(IMigrationConventions conventions)
         {
+            if (String.IsNullOrEmpty(SchemaName)) {
+                SchemaName = conventions.GetDefaultSchemaName();
+            }
+
             if (String.IsNullOrEmpty(ConstraintName)){ 
                 ConstraintName = conventions.GetConstraintName(this);
             }

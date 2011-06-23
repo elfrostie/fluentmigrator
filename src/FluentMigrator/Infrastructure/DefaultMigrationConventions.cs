@@ -27,6 +27,9 @@ namespace FluentMigrator.Infrastructure
 {
 	public static class DefaultMigrationConventions
 	{
+
+        public static string DefaultSchemaName { get; set; }
+
 		public static string GetPrimaryKeyName(string tableName)
 		{
 			return "PK_" + tableName;

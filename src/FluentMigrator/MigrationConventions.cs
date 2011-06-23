@@ -36,6 +36,11 @@ namespace FluentMigrator
 
         public Func<Model.ConstraintDefinition, string> GetConstraintName { get; set; }
 
+        public Func<string> GetDefaultSchemaName {
+            get {
+                return () => DefaultMigrationConventions.DefaultSchemaName;
+            }
+        }
 
 		public MigrationConventions()
 		{
@@ -48,7 +53,9 @@ namespace FluentMigrator
 			GetMetadataForMigration = DefaultMigrationConventions.GetMetadataForMigration;
 			GetWorkingDirectory = DefaultMigrationConventions.GetWorkingDirectory;
             GetConstraintName = DefaultMigrationConventions.GetConstraintName;
-              
 		}
-	}
+
+
+        
+    }
 }
