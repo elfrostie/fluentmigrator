@@ -17,3 +17,5 @@ packages/FluentMigrator/
 _UpgradeReport_Files
 UpgradeLog.XML
 *.bak
+*.sln.docstates
+*.csproj.vs10x
