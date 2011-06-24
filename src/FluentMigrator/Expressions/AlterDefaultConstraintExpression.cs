@@ -11,6 +11,11 @@ namespace FluentMigrator.Expressions
 		public virtual string ColumnName { get; set; }
 		public virtual object DefaultValue { get; set; }
 
+        public override void ApplyConventions(IMigrationConventions conventions) {
+            if (string.IsNullOrEmpty(SchemaName)) {
+                SchemaName = conventions.GetDefaultSchemaName();
+            }
+        }
 		public override void CollectValidationErrors(ICollection<string> errors)
 		{
 			if (String.IsNullOrEmpty(TableName))
