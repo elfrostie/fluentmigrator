@@ -22,15 +22,22 @@ namespace FluentMigrator.Builders.Create.Constraint
             Expression.Constraint.TableName = tableName;
             return this;
         }
-
+        
         public void Column(string columnName)
         {
             Expression.Constraint.Columns.Add(columnName);
         }
-
+        
+        /*
         public void Columns(string[] columnNames)
         {
             foreach(var columnName in columnNames){
+                Expression.Constraint.Columns.Add(columnName);
+            }
+        }
+        */
+        public void Columns(params string[] columnNames) {
+            foreach (var columnName in columnNames) {
                 Expression.Constraint.Columns.Add(columnName);
             }
         }
