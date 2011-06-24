@@ -32,6 +32,10 @@ namespace FluentMigrator.Expressions
 			Index = new IndexDefinition();
 		}
 
+        public override void ApplyConventions(IMigrationConventions conventions) {
+            Index.ApplyConventions(conventions);
+        }
+
 		public override void CollectValidationErrors(ICollection<string> errors)
 		{
 			Index.CollectValidationErrors(errors);

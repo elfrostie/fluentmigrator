@@ -24,7 +24,7 @@ namespace FluentMigrator.VersionTableInfo
 	{
 	    public string SchemaName
 	    {
-            get { return null; }
+            get { return FluentMigrator.Infrastructure.DefaultMigrationConventions.DefaultSchemaName; }
 	    }
 
 	    public string TableName
