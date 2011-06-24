@@ -21,8 +21,8 @@ namespace FluentMigrator.Runner.Generators.Postgres
 			SetTypeMap(DbType.Currency, "money");
 			SetTypeMap(DbType.Date, "date");
 			SetTypeMap(DbType.DateTime, "timestamp");
-			SetTypeMap(DbType.Decimal, "decimal(5,19)");
-			SetTypeMap(DbType.Decimal, "decimal($precision,$size)", DecimalCapacity);
+			SetTypeMap(DbType.Decimal, "decimal(19,5)");
+			SetTypeMap(DbType.Decimal, "decimal($size,$precision)", DecimalCapacity);
 			SetTypeMap(DbType.Double, "float8");
 			SetTypeMap(DbType.Guid, "uuid");
 			SetTypeMap(DbType.Int16, "smallint");
