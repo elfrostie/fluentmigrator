@@ -30,6 +30,7 @@ namespace FluentMigrator.Runner.Initialization
 		int Steps { get; set; }
 		string WorkingDirectory { get; set; }
 		string Profile { get; set; }
+        string BeforeProfile { get; set; }
 		IAnnouncer Announcer { get; }
 		IStopWatch StopWatch { get; }
 		int Timeout { get; set; }

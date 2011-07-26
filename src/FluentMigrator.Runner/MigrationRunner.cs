@@ -39,6 +39,7 @@ namespace FluentMigrator.Runner
 		public IMigrationProcessor Processor { get; private set; }
 		public IMigrationLoader MigrationLoader { get; set; }
 		public IProfileLoader ProfileLoader { get; set; }
+        public IProfileLoader BeforeProfileLoader { get; set; }
 		public IMigrationConventions Conventions { get; private set; }
 		public IList<Exception> CaughtExceptions { get; private set; }
 
@@ -58,7 +59,8 @@ namespace FluentMigrator.Runner
 
 			VersionLoader = new VersionLoader(this, _migrationAssembly, Conventions);
 			MigrationLoader = new MigrationLoader(Conventions, _migrationAssembly, runnerContext.Namespace);
-			ProfileLoader = new ProfileLoader(runnerContext, this, Conventions);
+			ProfileLoader = new ProfileLoader(runnerContext, this, Conventions, false);
+            BeforeProfileLoader = new ProfileLoader(runnerContext, this, Conventions, true);
 		}
 
 		public VersionLoader VersionLoader { get; set; }
@@ -67,6 +69,10 @@ namespace FluentMigrator.Runner
 		{
 			ProfileLoader.ApplyProfiles();
 		}
+
+        public void ApplyBeforeProfiles() {
+            BeforeProfileLoader.ApplyProfiles();
+        }
 
         public void MigrateUp()
         {
@@ -77,6 +83,7 @@ namespace FluentMigrator.Runner
 		{
 			try
 			{
+                ApplyBeforeProfiles();
 				foreach (var version in MigrationLoader.Migrations.Keys)
 				{
 					ApplyMigrationUp(version);
@@ -103,10 +110,12 @@ namespace FluentMigrator.Runner
 		{
 			try 
 			{
+                ApplyBeforeProfiles();
                 foreach (var neededMigrationVersion in GetUpMigrationsToApply(targetVersion))
 				{
                     ApplyMigrationUp(neededMigrationVersion);
                 }
+                ApplyProfiles();
                 if (useAutomaticTransactionManagement) { Processor.CommitTransaction(); }
                 VersionLoader.LoadVersionInfo();
 			} 

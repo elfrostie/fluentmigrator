@@ -9,11 +9,11 @@ namespace FluentMigrator.Runner
 {
 	public class ProfileLoader : IProfileLoader
 	{
-		public ProfileLoader(IRunnerContext runnerContext, IMigrationRunner runner, IMigrationConventions conventions)
+		public ProfileLoader(IRunnerContext runnerContext, IMigrationRunner runner, IMigrationConventions conventions, bool isBeforeProfile)
 		{
 			Runner = runner;
 			Assembly = runner.MigrationAssembly;
-			Profile = runnerContext.Profile;
+			Profile = isBeforeProfile ? runnerContext.BeforeProfile : runnerContext.Profile;
 			Conventions = conventions;
 
 			Initialize();
@@ -68,4 +68,5 @@ namespace FluentMigrator.Runner
 			}
 		}
 	}
+
 }
