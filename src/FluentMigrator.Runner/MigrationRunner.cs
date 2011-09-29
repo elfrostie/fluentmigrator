@@ -151,11 +151,12 @@ namespace FluentMigrator.Runner
 		{
 			try
 			{
+                ApplyBeforeProfiles();
                 foreach (var neededMigrationVersion in GetDownMigrationsToApply(targetVersion))
 				{
                     ApplyMigrationDown(neededMigrationVersion);
                 }
-
+                ApplyProfiles();
                 if (useAutomaticTransactionManagement) { Processor.CommitTransaction(); }
 				VersionLoader.LoadVersionInfo();
 			}
@@ -223,11 +224,12 @@ namespace FluentMigrator.Runner
 		{
             try
             {
+                ApplyBeforeProfiles();
                 foreach (var migrationNumber in VersionLoader.VersionInfo.AppliedMigrations().Take(steps))
                 {
                     ApplyMigrationDown(migrationNumber);
                 }
-
+                ApplyProfiles();
                 VersionLoader.LoadVersionInfo();
                 if (useAutomaticTransactionManagement) { Processor.CommitTransaction(); }
             }
@@ -248,6 +250,7 @@ namespace FluentMigrator.Runner
             //TODO: Extract VersionsToApply Strategy
             try
             {
+                ApplyBeforeProfiles();
                 // Get the migrations between current and the to version
                 foreach (var migrationNumber in VersionLoader.VersionInfo.AppliedMigrations())
                 {
@@ -256,6 +259,7 @@ namespace FluentMigrator.Runner
                         ApplyMigrationDown(migrationNumber);
                     }
                 }
+                ApplyProfiles();
 
                 if (version == 0)
                     VersionLoader.RemoveVersionTable();
