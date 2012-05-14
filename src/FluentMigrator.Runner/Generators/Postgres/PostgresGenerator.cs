@@ -4,12 +4,32 @@ using System.Text;
 using FluentMigrator.Expressions;
 using FluentMigrator.Model;
 using FluentMigrator.Runner.Generators.Generic;
+using System.Linq;
 
 namespace FluentMigrator.Runner.Generators.Postgres
 {
 	public class PostgresGenerator : GenericGenerator
 	{
 		public PostgresGenerator() : base(new PostgresColumn(), new PostgresQuoter()) { }
+
+
+        public override string CreateConstraint { get { return "ALTER TABLE {0}.{1} ADD CONSTRAINT {2} {3} ({4})"; } }
+
+        public override string Generate(CreateConstraintExpression expression) {
+
+            var constraintType = (expression.Constraint.IsPrimaryKeyConstraint) ? "PRIMARY KEY" : "UNIQUE";
+
+            string[] columns = new string[expression.Constraint.Columns.Count];
+
+            for (int i = 0; i < expression.Constraint.Columns.Count; i++) {
+                columns[i] = Quoter.QuoteColumnName(expression.Constraint.Columns.ElementAt(i));
+            }
+
+            return string.Format(CreateConstraint, Quoter.QuoteSchemaName(expression.Constraint.SchemaName),  Quoter.QuoteTableName(expression.Constraint.TableName),
+                Quoter.Quote(expression.Constraint.ConstraintName),
+                constraintType,
+                String.Join(", ", columns));
+        }
 
 		public override string Generate(CreateSchemaExpression expression)
 		{

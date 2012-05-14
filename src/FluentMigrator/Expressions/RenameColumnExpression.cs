@@ -29,6 +29,12 @@ namespace FluentMigrator.Expressions
 		public virtual string OldName { get; set; }
 		public virtual string NewName { get; set; }
 
+        public override void ApplyConventions(IMigrationConventions conventions) {
+            if (String.IsNullOrEmpty(SchemaName)) {
+                SchemaName = conventions.GetDefaultSchemaName();
+            }
+        }
+
 		public override void CollectValidationErrors(ICollection<string> errors)
 		{
 			if (String.IsNullOrEmpty(OldName))
