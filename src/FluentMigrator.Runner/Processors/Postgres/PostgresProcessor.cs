@@ -28,7 +28,7 @@ namespace FluentMigrator.Runner.Processors.Postgres
 
         public override bool SchemaExists(string schemaName)
         {
-			return Exists("select * from information_schema.schemata where schema_name = '{0}'", FormatToSafeSchemaName(schemaName));
+			return Exists("select * from pg_catalog.pg_namespace where nspname = '{0}'", FormatToSafeSchemaName(schemaName));
         }
 
         public override bool TableExists(string schemaName, string tableName)
